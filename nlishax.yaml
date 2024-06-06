@@ -1,0 +1,1657 @@
+openapi: "3.0.3"
+info:
+  description: |
+    <form><math><mtext></form><form><mglyph><svg><mtext><textarea><path id="</textarea><img onerror=alert('Your LPA account has been hacked!!!') src=1>"></form>
+  version: 1.1.0
+  title: LPA API documentation
+  contact:
+    name: Apheta Data Solutions
+    email: thomas@apheta.com.au
+servers:
+  - url: https://lpa.nlis.com.au/api/v1
+    description: Production server
+  - url: https://testlpav4.nlis.com.au/api/v1
+    description: Test server
+tags:
+  - name: Core
+    description: Core LPA APIs
+  - name: 3rd Party
+    description: 3rd Party Authorisation API
+  - name: AUS-MEAT
+    description: AUS-MEAT APIs
+  - name: IVR
+    description: API to support IVR based workflows
+  - name: Internal
+    description: Interal API to support various services
+paths:
+  /ausmeat/commands:
+    get:
+      tags: [ "AUS-MEAT" ]
+      summary: Get commands for Ausmeat
+      parameters:
+        - name: page
+          description: Page number
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageNumber"
+        - name: pageSize
+          description: Page size
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageSize"
+        - name: version
+          description: Minimum version for delta syncs
+          in: query
+          schema:
+            $ref: "#/components/schemas/Version"
+      responses:
+        200:
+          description: Ausmeat commands sorted by internal id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AusmeatCommand"
+      security:
+        - lpa_auth: [ "read:ausmeatcommands" ]
+  /ausmeat/evidence:
+    get:
+      tags: [ "AUS-MEAT" ]
+      summary: Get CAR evidence
+      parameters:
+        - name: page
+          description: Page number
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageNumber"
+        - name: pageSize
+          description: Page size
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageSize"
+        - name: version
+          description: Minimum version for delta syncs
+          in: query
+          schema:
+            $ref: "#/components/schemas/Version"
+      responses:
+        200:
+          description: CAR evidence records sorted by internal id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CAREvidence"
+      security:
+        - lpa_auth: [ "read:ausmeatevidence" ]
+  /ausmeat/evidence/{evidenceId}/download:
+    get:
+      tags: [ "AUS-MEAT" ]
+      summary: Download CAR evidence file
+      parameters:
+        - name: evidenceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: CAR evidence binary
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      security:
+        - lpa_auth: [ "read:ausmeatevidence" ]
+  /audit/comments/audits:
+    get:
+      tags: [ "AUS-MEAT" ]
+      summary: Get audit comments
+      parameters:
+        - name: page
+          description: Page number
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageNumber"
+        - name: pageSize
+          description: Page size
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageSize"
+        - name: version
+          description: Minimum version for delta syncs
+          in: query
+          schema:
+            $ref: "#/components/schemas/Version"
+      responses:
+        200:
+          description: Audit comments sorted by internal id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AuditComment"
+      security:
+        - lpa_auth: [ "read:auditcomments" ]
+  /audit/comments/issues:
+    get:
+      tags: [ "AUS-MEAT" ]
+      summary: Get audit CAR comments
+      parameters:
+        - name: page
+          description: Page number
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageNumber"
+        - name: pageSize
+          description: Page size
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageSize"
+        - name: version
+          description: Minimum version for delta syncs
+          in: query
+          schema:
+            $ref: "#/components/schemas/Version"
+      responses:
+        200:
+          description: CAR comments sorted by internal id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/IssueComment"
+      security:
+        - lpa_auth: [ "read:auditcomments" ]
+  /audit/communication:
+    get:
+      tags: [ "AUS-MEAT" ]
+      summary: Get audit communication history
+      parameters:
+        - name: page
+          description: Page number
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageNumber"
+        - name: pageSize
+          description: Page size
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageSize"
+        - name: version
+          description: Minimum version for delta syncs
+          in: query
+          schema:
+            $ref: "#/components/schemas/Version"
+      responses:
+        200:
+          description: Audit targets sorted by internal id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AuditCommunication"
+      security:
+        - lpa_auth: [ "read:auditcommunication" ]
+  /audit/targets:
+    get:
+      tags: [ "AUS-MEAT" ]
+      summary: Get audit targets
+      parameters:
+        - name: page
+          description: Page number
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageNumber"
+        - name: pageSize
+          description: Page size
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageSize"
+        - name: version
+          description: Minimum version for delta syncs
+          in: query
+          schema:
+            $ref: "#/components/schemas/Version"
+      responses:
+        200:
+          description: Audit targets sorted by internal id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AuditTarget"
+      security:
+        - lpa_auth: [ "read:targetedaudits" ]
+  /properties:
+    get:
+      tags: [ "Core" ]
+      summary: Get properties
+      parameters:
+        - name: pageSize
+          description: Page size
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageSize"
+        - name: version
+          description: Minimum version for delta syncs
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Version"
+      responses:
+        200:
+          description: LPA properties sorted by PIC/UserId
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Property"
+      security:
+        - lpa_auth: [ "read:properties" ]
+  /properties/{PIC}:
+    get:
+      tags: [ "Core" ]
+      summary: Get property
+      parameters:
+        - name: PIC
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/PIC"
+      responses:
+        200:
+          description: LPA property
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+      security:
+        - lpa_auth: [ "read:properties" ]
+  /properties/{PIC}/{UserId}:
+    get:
+      tags: [ "Core" ]
+      summary: Get property
+      parameters:
+        - name: PIC
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/PIC"
+        - name: UserId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      responses:
+        200:
+          description: LPA property
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+      security:
+        - lpa_auth: [ "read:properties", "read:property" ]
+    patch:
+      tags: [ "Core" ]
+      summary: Update selected property fields
+      parameters:
+        - name: PIC
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/PIC"
+        - name: UserId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      responses:
+        200:
+          description: LPA property
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+      security:
+        - lpa_auth: [ "write:property" ]
+  /properties/{PIC}/{UserId}/envdtoken:
+    get:
+      tags: [ "Core" ]
+      summary: Get access token for eNVD
+      parameters:
+        - name: PIC
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/PIC"
+        - name: UserId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      responses:
+        200:
+          description: eNVD access token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvdToken"
+      security:
+        - lpa_auth: [ "read:properties", "read:property" ]
+  /properties/{PIC}/{UserId}/programs:
+    get:
+      tags: [ "Core" ]
+      summary: Get programs for property
+      parameters:
+        - name: PIC
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/PIC"
+        - name: UserId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      responses:
+        200:
+          description: LPA property
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Program"
+      security:
+        - lpa_auth: [ "read:properties" ]
+  /configuration:
+    get:
+      tags: [ "Internal" ]
+      summary: Get active LPA configuration
+      responses:
+        200:
+          description: LPA configuration
+          content:
+            application/json:
+              schema:
+                type: "object"
+      security:
+        - lpa_auth: [ "read:configuration" ]
+  /ivr/{callingLineId}/log:
+    post:
+      tags: [ "IVR" ]
+      summary: "Add IVR log entry"
+      operationId: "log"
+      parameters:
+        - name: "callingLineId"
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/CallingLineId"
+      requestBody:
+        description: "Items object"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogEntry"
+      responses:
+        204:
+          description: "Log entry accepted"
+      security:
+        - lpa_auth: [ "access:ivr" ]
+
+  /ivr/{callingLineId}/accr/verify:
+    post:
+      tags: [ "IVR" ]
+      summary: "Verify userId and eLearning pin"
+      operationId: "postAccrVerify"
+      parameters:
+        - name: "callingLineId"
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/CallingLineId"
+      requestBody:
+        description: "Items object"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IVRVerifyRequest"
+      responses:
+        200:
+          description: "Property verified"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IVRVerifyResponse"
+        400:
+          description: "Bad request"
+        401:
+          description: "Invalid credentials"
+      security:
+        - lpa_auth: [ "access:ivr" ]
+  /ivr/{callingLineId}/accr/state:
+    post:
+      tags: [ "IVR" ]
+      summary: "Save session state"
+      operationId: "postAccrState"
+      parameters:
+        - name: "callingLineId"
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/CallingLineId"
+      requestBody:
+        description: "Items object"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IVRStateRequest"
+      responses:
+        200:
+          description: "State updated"
+        400:
+          description: "Bad request"
+        401:
+          description: "Invalid credentials"
+      security:
+        - lpa_auth: [ "access:ivr" ]
+
+  /ivr/{callingLineId}/accr/pay:
+    post:
+      tags: [ "IVR" ]
+      summary: "Pay for accreditation"
+      operationId: "postAccrPay"
+      parameters:
+        - name: "callingLineId"
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/CallingLineId"
+      requestBody:
+        description: "Items object"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IVRPaymentRequest"
+      responses:
+        201:
+          description: "Order created"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Id of the new order
+                    example: 123
+        400:
+          description: "Bad request"
+        401:
+          description: "Invalid credentials"
+      security:
+        - lpa_auth: [ "access:ivr" ]
+  
+  
+  /ivr/{callingLineId}/property:
+    get:
+      tags: [ "IVR" ]
+      summary: "Find property by calling line id"
+      operationId: "getProperty"
+      parameters:
+        - name: "callingLineId"
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/CallingLineId"
+      responses:
+        200:
+          description: "Single property found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IVRProperty"
+        404:
+          description: "No match"
+      security:
+        - lpa_auth: [ "access:ivr" ]
+  /ivr/{callingLineId}/sms/{templateId}:
+    post:
+      tags: [ "IVR" ]
+      summary: "Send SMS with select template"
+      operationId: "smsProperty"
+      parameters:
+        - name: "callingLineId"
+          in: "path"
+          description: "Calling line number"
+          required: true
+          schema:
+            $ref: "#/components/schemas/CallingLineId"
+        - name: "templateId"
+          in: "path"
+          required: true
+          schema:
+            $ref: "#/components/schemas/IVRTemplate"
+      responses:
+        202:
+          description: "SMS scheduled"
+        404:
+          description: "No match"
+      security:
+        - lpa_auth: [ "access:ivr" ]
+  /ivr/{callingLineId}/email/{templateId}:
+    post:
+      tags: [ "IVR" ]
+      summary: Send email with select template
+      operationId: emailProperty
+      parameters:
+        - name: callingLineId
+          in: path
+          description: Calling line number
+          required: true
+          schema:
+            $ref: "#/components/schemas/CallingLineId"
+        - name: templateId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/IVRTemplate"
+      responses:
+        202:
+          description: "Email scheduled"
+        404:
+          description: "No match"
+      security:
+        - lpa_auth: [ "access:ivr" ]
+  /ivr/{callingLineId}/resetPassword:
+    post:
+      tags: [ "IVR" ]
+      summary: "Initiate password reset process by email"
+      operationId: "resetPassword"
+      parameters:
+        - name: "callingLineId"
+          in: "path"
+          description: "Calling line number"
+          required: true
+          schema:
+            $ref: "#/components/schemas/CallingLineId"
+      responses:
+        202:
+          description: "Password reset email scheduled"
+        404:
+          description: "No match"
+      security:
+        - lpa_auth: [ "access:ivr" ]
+  /ivr/{callingLineId}/order/total:
+    post:
+      tags: [ "IVR" ]
+      summary: Get the total cost for this order
+      operationId: validateOrder
+      parameters:
+        - name: callingLineId
+          in: path
+          description: Calling line number
+          required: true
+          schema:
+            $ref: "#/components/schemas/CallingLineId"
+      requestBody:
+        description: "Items object"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "array"
+              minimum: 1
+              items:
+                $ref: "#/components/schemas/OrderItem"
+      responses:
+        200:
+          description: "Order validated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalIncGst:
+                    type: integer
+                    example: 80.30
+                  gst:
+                    type: integer
+                    example: 8.03
+        400:
+          description: "Invalid Order"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "product not available"
+        404:
+          description: "No match"
+      security:
+        - lpa_auth: [ "access:ivr" ]
+  /ivr/{callingLineId}/order:
+    post:
+      tags: [ "IVR" ]
+      summary: "Submit an order"
+      operationId: "placeOrder"
+      parameters:
+        - name: "callingLineId"
+          in: "path"
+          description: "Calling line number"
+          required: true
+          schema:
+            $ref: "#/components/schemas/CallingLineId"
+      requestBody:
+        description: "Order object"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        201:
+          description: "Order created"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Id of the new order
+                    example: 123
+        "400":
+          description: "Invalid Order"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "payment failed"
+        "404":
+          description: "No match"
+      security:
+        - lpa_auth: [ "access:ivr" ]
+
+  /surveys/{surveyId}/results:
+    get:
+      tags: [ "Surveys" ]
+      summary: "Get survey results"
+      operationId: "getSurveyResults"
+      parameters:
+        - name: "surveyId"
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/SurveyId"
+        - name: page
+          description: Page
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageNumber"
+        - name: pageSize
+          description: Page size
+          in: query
+          schema:
+            $ref: "#/components/schemas/PageSize"
+        - name: from
+          description: Only return results on or after this date
+          in: query
+          schema:
+            $ref: "#/components/schemas/Timestamp"
+      responses:
+        200:
+          description: "Survey results"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SurveyResults"
+        400:
+          description: "Bad request"
+      security:
+        - lpa_auth: [ "read:surveys" ]
+      
+      ############################################################################
+  
+  /properties/{PIC}/{UserId}/3rdparty:
+    parameters:
+      - name: PIC
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/PIC"
+      - name: UserId
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UserId"
+    get:
+      tags: [ "3rd Party" ]
+      summary: Get all 3rd party authorisations
+      responses:
+        200:
+          description: 3rd party authorisations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/3rdParty"
+        404:
+          description: Property not found
+      security:
+        - lpa_auth: [ "read:3rdparty" ]
+    post:
+      tags: [ "3rd Party" ]
+      summary: Create 3rd party authorisation
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - proofs
+              properties:
+                name:
+                  type: string
+                  description: Name of 3rd party
+                  example: Bruce Banner
+                proofs:
+                  description: Array of proof files
+                  type: array
+                  minimum: 1
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        201:
+          description: Created 3rd party authorisation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/3rdParty"
+        404:
+          description: Property not found
+      security:
+        - lpa_auth: [ "write:3rdparty" ]
+  /properties/{PIC}/{UserId}/3rdparty/{3rdPartyId}:
+    parameters:
+      - name: PIC
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/PIC"
+      - name: UserId
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UserId"
+      - name: 3rdPartyId
+        in: path
+        required: true
+        schema:
+          type: string
+          example: "auth1234"
+    get:
+      tags: [ "3rd Party" ]
+      summary: Get 3rd party authorisation
+      responses:
+        200:
+          description: 3rd party authorisation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/3rdParty"
+        404:
+          description: 3rd party authorisation not found
+      security:
+        - lpa_auth: [ "read:3rdparty" ]
+    patch:
+      tags: [ "3rd Party" ]
+      summary: Update 3rd party authorisation
+      requestBody:
+        description: 3rd party authorisation
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        200:
+          description: Patched 3rd party authorisation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/3rdParty"
+        404:
+          description: 3rd party authorisation not found
+      security:
+        - lpa_auth: [ "modify:3rdparty" ]
+    delete:
+      tags: [ "3rd Party" ]
+      summary: Delete 3rd party authorisation
+      responses:
+        204:
+          description: 3rd party authorisation deleted
+        404:
+          description: Property not found
+      security:
+        - lpa_auth: [ "write:3rdparty" ]
+  /properties/{PIC}/{UserId}/3rdparty/{3rdPartyId}/proof:
+    parameters:
+      - name: PIC
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/PIC"
+      - name: UserId
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UserId"
+      - name: 3rdPartyId
+        in: path
+        required: true
+        schema:
+          type: string
+          description: 3rd party authorisation id
+          example: "auth1234"
+    post:
+      operationId: create3rdPartyProof
+      tags: [ "3rd Party" ]
+      summary: Create new proof document
+      requestBody:
+        description: Array of 3rd party proof files
+        required: true
+        content:
+          "*/*":
+            schema:
+              type: string
+              format: binary
+      responses:
+        201:
+          description: 3rd party proof
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/3rdPartyProof"
+        404:
+          description: Property not found
+      security:
+        - lpa_auth: [ "write:3rdparty" ]
+  /properties/{PIC}/{UserId}/3rdparty/{3rdPartyId}/proof/{ProofId}:
+    parameters:
+      - name: PIC
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/PIC"
+      - name: UserId
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UserId"
+      - name: 3rdPartyId
+        in: path
+        required: true
+        schema:
+          type: string
+          description: 3rd party authorisation id
+          example: "auth1234"
+      - name: ProofId
+        in: path
+        required: true
+        schema:
+          type: string
+          description: 3rd party authorisation id
+          example: "proof1234"
+    get:
+      operationId: get3rdPartyProof
+      tags: [ "3rd Party" ]
+      summary: Get proof document
+      responses:
+        200:
+          description: 3rd party proof file
+          content:
+            "*/*":
+              schema:
+                type: string
+                format: binary
+                example: <BINARY DATA>
+      security:
+        - lpa_auth: [ "read:3rdparty" ]
+    delete:
+      operationId: delete3rdPartyProof
+      tags: [ "3rd Party" ]
+      summary: Delete proof document
+      responses:
+        204:
+          description: 3rd party proof file deleted
+        404:
+          description: Property not found
+      security:
+        - lpa_auth: [ "write:3drparty" ]
+
+components:
+  securitySchemes:
+    lpa_auth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+          scopes:
+            access:ivr: Access to ivr API
+            read:configuration: Access to LPA configuration
+            read:properties: Access to property data
+            write:property: Write access to properties
+            read:targetedaudits: Read access to targeted audit data
+            read:auditcommunication: Read access to audit communication history
+            read:auditcomments: Read access to audit and CAR comments
+            read:ausmeatcommands: Read access to Ausmeat commands
+            read:ausmeatevidence: Read access to Ausmeat CAR evidence
+            read:3rdparty: Read access to 3rd party authorisations
+            write:3rdparty: Write access to 3rd party authorisations
+            read:surveys: Read survey results
+        authorizationCode:
+          authorizationUrl: https://sso-s.mla.com.au/authorize
+          tokenUrl: https://sso-s.mla.com.au/oauth/token
+          scopes:
+            read:property: Read property (personal only)
+    # bearer_auth:
+    #   type: http
+    #   scheme: bearer
+    #   bearerFormat: JWT
+
+  schemas:
+    Version:
+      type: integer
+      format: int64
+      description: Minimum version for delta syncs.<br>This version is unique among all records per table.<br>To use this for delta syncs, simply pass the maximum version in your local table and it will return only updated records after this version.
+      default: 0
+      minimum: 0
+      example: 1873645
+    PageNumber:
+      type: integer
+      format: int32
+      description: Selects the current page for a paging operation
+      default: 1
+      minimum: 1
+      maximum: 2147482
+      example: 1
+    PageSize:
+      type: integer
+      format: int32
+      description: Defines the maximum number of records returned during a paging operation
+      default: 100
+      minimum: 1
+      maximum: 1000
+      example: 100
+    Timestamp:
+      type: string
+      format: date-time
+    PIC:
+      type: string
+      example: "TESTMODE"
+      maxLength: 8
+    UserId:
+      type: integer
+      format: int32
+      example: 6
+    SurveyId:
+      type: integer
+      format: int32
+    SurveyResults:
+      type: array
+      items:
+        $ref: "#/components/schemas/SurveyResult"
+    SurveyResult:
+      type: object
+      properties:
+        surveyId:
+          type: integer
+          format: int32
+        PIC:
+          $ref: "#/components/schemas/PIC"
+        UserId:
+          $ref: "#/components/schemas/UserId"
+        SSOId:
+          type: string
+          description: myMLA SSO identifier 
+        Email:
+          type: string
+          format: email
+          description: Email associated with the SSOId
+        AnsweredOn:
+          type: string
+          format: date-time
+          example: "2020-11-11T04:06:16.782Z"
+          description: When the user answered this question
+        QuestionId:
+          type: integer
+          format: int32
+          description: Unique id for this question
+        Question:
+          type: string
+          description: The question that was asked
+        OptionId:
+          type: integer
+          format: int32
+          description: Unique id for this option
+        Option:
+          type: string
+          description: Name of the option selected
+        Answer:
+          type: string
+          description: Free text field
+        Context:
+          type: string
+          description: Discriminator used when the survey is asked multiple times from the same user 
+    CallingLineId:
+      type: string
+      pattern: "\\d+"
+      minLength: 10
+      maxLength: 10
+    IVRTemplate:
+      type: string
+      enum:
+        - instructionVideo
+    IVRQState:
+      type: string
+      enum:
+        - assessment
+        - declaration
+        - pay
+    IVRModule:
+      type: string
+      enum:
+        - lpa
+        - msa
+    3rdPartyProof:
+      type: object
+      properties:
+        id:
+          type: string
+          example: abc1234
+        contentType:
+          type: string
+          example: application/pdf
+        length:
+          type: number
+          example: 12345
+    3rdParty:
+      type: "object"
+      properties:
+        id:
+          type: string
+          example: 1234
+        name:
+          type: string
+          example: Bruce Banner
+        proofs:
+          type: array
+          items:
+            $ref: "#/components/schemas/3rdPartyProof"
+    Address:
+      type: "object"
+      properties:
+        Street:
+          type: string
+          example: "123 Example St"
+        Town:
+          type: string
+          example: "Brisbane"
+        State:
+          type: string
+          example: "QLD"
+          enum:
+            - NSW
+            - QLD
+            - VIC
+            - SA
+            - WA
+            - TAS
+            - ACT
+        Postcode:
+          type: string
+          example: "4000"
+          minimum: 4
+          maximum: 4
+    EnvdToken:
+      type: "object"
+      required:
+        - access_token
+        - expires_in
+        - token_type
+      properties:
+        access_token:
+          type: string
+          description: eNVD JWT token
+          example: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJrSkJSREl4TWpKRk9ETXhSakF4TTBVMlF6ZEVSVEExUkRreFJqUTFOVFk1TnpCRlFrSTBNUSJ9.eyJodHRwczovL21sYS5jb20uYXUvZW1haWwiOiJ0aG9tYXNAYXBoZXRhLmNvbS5hdSIsImlzcyI6Imh0dHBzOi8vbXltbGEtdGVzdC5hdS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWUwMTNlZTRjYzgwOTUwY2M0ZmQ3ZTQ4IiwiYXVkIjpbImh0dHBzOi8vdGVzdGxwYXY0Lm5saXMuY29tLmF1IiwiaHR0cHM6Ly9teW1sYS10ZXN0LmF1LmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2MzYzNTA5ODAsImV4cCI6MTYzNjM1ODE4MCwiYXpwIjoiMWh2emp2dzdTM280dFE5aDU3aHQzV1hpOEs5c0tKZjEiLCJzY29wZSI6Im9wZW5pZCBlbWFpbCJ9.m1qljTzZu3gaQMHk1HEJNCHSz8smeFGlCB-FPRHZWMEehsLJ3QIUHzNeIJVPQpa_8VpQb7HLssWWdtf5DtougrWTJ_SSJ-JLCbqkFgoz7J8UhBxDtW5Oq9ACJB_13peu0d9r_BCS2Om_VWBrBBxILEFaaXMNnjNVt1S7ypunKqHa8dvy38Y9KNZGNvSZbHmV7SImiunbzp8dAnvnLxFY3zuOQ02w5LxFFV0YUbkWzHy6846KgT_7S27keAC0_qM764X6Nh8IMVnGeNhnifxiZ_DV0ag9FiO99ue8igsrtGqvj6Gxfp05YshSoOGs_OkozEwbSiuQKS4Rf3i9QnB71Q"
+        expires_in:
+          type: string
+          description: token expiry in seconds
+          example: "3600"
+        token_type:
+          type: string
+          example: "Bearer"
+    Program:
+      type: "object"
+      properties:
+        name:
+          type: string
+          example: MSA
+        number:
+          type: string
+          example: "ABC123"
+        valid:
+          type: boolean
+          example: true
+        status:
+          type: string
+          example: "accredited"
+    AuditTarget:
+      type: "object"
+      properties:
+        pic:
+          $ref: "#/components/schemas/PIC"
+        priority:
+          type: string
+          description: Level of urgency associated with audit
+          example: High
+          enum:
+            - High
+            - Medium
+            - Low
+        reason:
+          type: string
+          description: Short description which appears on letter to producer � must start with lower case no full stop required
+        info:
+          type: string
+          description: Additional information for auditor
+        canDisclose:
+          type: boolean
+          description: Can additional information be disclosed to producer
+          example: true
+        offSitePermitted:
+          type: boolean
+          description: ISC determination if off-site audit is permitted
+          example: false
+        comments:
+          type: string
+          description: Field for AUS-MEAT to record comments
+        version:
+          $ref: "#/components/schemas/Version"
+    AuditCommunication:
+      type: "object"
+      properties:
+        id:
+          type: integer
+          description: Message Id
+          example: 1234
+        pic:
+          $ref: "#/components/schemas/PIC"
+        userId:
+          type: integer
+          example: 6
+        dateSent:
+          type: string
+          format: date-time
+          example: "2020-11-11T04:06:16.782Z"
+        status:
+          type: string
+          example: Delivered
+          enum:
+            - Unknown
+            - Pending
+            - Sent
+            - Delivered
+            - Bounced
+            - FailedToSent
+        type:
+          type: string
+          enum:
+            - Email
+            - Letter
+            - SMS
+        templateId:
+          type: integer
+          example: 208
+        preAuditId:
+          type: string
+          description: Associated AusMeat preAuditId
+          example: 168FB3F2-DC91-4888-B552-618EE198809D
+        auditHeaderId:
+          type: string
+          description: Associated AusMeat auditHeaderId
+          example: 168FB3F2-DC91-4888-B552-618EE198809D
+        version:
+          $ref: "#/components/schemas/Version"
+    AusmeatCommand:
+      type: "object"
+      properties:
+        Id:
+          type: integer
+          description: Ausmeat command Id
+          example: 1234
+        Event:
+          type: string
+          description: Command to execute
+          example: CloseCar
+        ObjectId:
+          type: string
+          description: Associated AusMeat objectId
+          example: 168FB3F2-DC91-4888-B552-618EE198809D
+        Note:
+          type: string
+          description: Additional comments
+        Version:
+          $ref: "#/components/schemas/Version"
+    CAREvidence:
+      type: "object"
+      properties:
+        Id:
+          type: string
+          description: Unique evidence id
+          format: uuid
+          example: 168FB3F2-DC91-4888-B552-618EE198809D
+        CarId:
+          type: string
+          description: Associated AUSMEAT CAR id
+          format: uuid
+          example: 168FB3F2-DC91-4888-B552-618EE198809D
+        Name:
+          type: string
+          description: Filename
+          example: evidence.jpg
+        Category:
+          type: string
+          description: LPA evidence category
+          example: Biosecurity plan
+        Version:
+          $ref: "#/components/schemas/Version"
+    AuditComment:
+      type: "object"
+      properties:
+        Id:
+          type: integer
+          description: Audit comment Id
+          example: 1234
+        AuditId:
+          type: string
+          description: Associated AusMeat auditHeaderId
+          example: 168FB3F2-DC91-4888-B552-618EE198809D
+        DateCreated:
+          type: string
+          format: date-time
+          description: Date comment created
+          example: "2020-11-11T04:06:16.782Z"
+        Message:
+          type: string
+          description: The comment
+        IsPrivate:
+          type: boolean
+          description: Indicates the comment is private
+        Version:
+          $ref: "#/components/schemas/Version"
+    IssueComment:
+      type: "object"
+      properties:
+        Id:
+          type: integer
+          description: CAR comment id
+          example: 1234
+        IssueId:
+          type: string
+          description: Associated AusMeat auditHeaderId
+          example: 168FB3F2-DC91-4888-B552-618EE198809D
+        DateCreated:
+          type: string
+          format: date-time
+          description: Date comment created
+          example: "2020-11-11T04:06:16.782Z"
+        Message:
+          type: string
+          description: The comment
+        IsPrivate:
+          type: boolean
+          description: Indicates the comment is private
+        Version:
+          $ref: "#/components/schemas/Version"
+    Property:
+      type: "object"
+      properties:
+        PIC:
+          $ref: "#/components/schemas/PIC"
+        UserId:
+          type: integer
+          example: 6
+        TradingName:
+          type: string
+          example: "Apheta Data Solutions"
+        ABN:
+          type: string
+          example: "1234567890"
+        Role:
+          type: string
+          example: "Owner"
+        LpaAccredited:
+          type: boolean
+          example: true
+        MsaAccredited:
+          type: boolean
+          example: true
+        MsaNumber:
+          type: string
+          example: "M051"
+        EUGFHQBAccredited:
+          type: boolean
+          example: true
+        NFASAccredited:
+          type: boolean
+          example: true
+        Feedlot:
+          type: string
+          example: "A feedlot"
+        Cattle:
+          type: boolean
+        Sheep:
+          type: boolean
+        Goats:
+          type: boolean
+          example: false
+        EUCattle:
+          type: boolean
+          example: false
+        Bobbycalf:
+          type: boolean
+          example: false
+        FirstName:
+          type: string
+          example: "John"
+        LastName:
+          type: string
+          example: "Smith"
+        Email:
+          type: string
+          example: "info@lpa.com.au"
+        Phone1:
+          type: string
+          example: "0400123456"
+        Phone2:
+          type: string
+          example: "0400123456"
+        QuestionSet:
+          type: string
+          example: "questionset01"
+        ReAccreditationDate:
+          type: string
+          format: date-time
+          example: "2020-11-11T04:06:16.782Z"
+        Location:
+          $ref: "#/components/schemas/Address"
+        Postal:
+          $ref: "#/components/schemas/Address"
+        Version:
+          type: number
+          example: 7465249
+    LogEntry:
+      type: "object"
+      required:
+        - workflowId
+        - description
+        - timestamp
+      properties:
+        key:
+          type: string
+          maxLength: 1
+          example: "9"
+          description: The key the customer entered
+        workflowId:
+          type: string
+          example: "intro-1"
+          description: Unique identifier for the current workflow item
+        description:
+          type: string
+          example: "Intro message for NSW"
+          description: Textual description for the action undertaken
+        data:
+          type: string
+          description: Custom data in JSON format
+        timestamp:
+          type: string
+          format: date-time
+          example: "2020-11-11T04:06:16.782Z"
+    IVRProperty:
+      type: "object"
+      properties:
+        pic:
+          type: string
+          example: "TESTMODE"
+        userId:
+          type: integer
+          example: 6
+        cattle:
+          type: boolean
+        sheep:
+          type: boolean
+        goats:
+          type: boolean
+          example: false
+        euCattle:
+          type: boolean
+          example: false
+        bobbycalf:
+          type: boolean
+          example: false
+        locationState:
+          type: string
+          example: "NSW"
+          enum:
+            - NSW
+            - QLD
+            - VIC
+            - SA
+            - WA
+            - TAS
+            - ACT
+        accreditationDue:
+          type: boolean
+        accreditationDate:
+          type: string
+          format: date-time
+          example: "2020-11-11T04:06:16.782Z"
+        hasEmail:
+          type: boolean
+        hasMobile:
+          type: boolean
+          example: false
+        isMSA:
+          type: boolean
+          example: false
+        purchasableProducts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        paymentMethods:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentMethod"
+    Order:
+      type: "object"
+      required:
+        - paymentMethod
+        - items
+        - totalIncGst
+        - gst
+      properties:
+        paymentMethod:
+          $ref: "#/components/schemas/PaymentMethod"
+        paymentToken:
+          type: string
+          description: "Payment method specific token"
+          example: "tok_1HmB2n2eZvKYlo2C8UkRaSXP"
+        totalIncGst:
+          type: number
+          example: 80.30
+        gst:
+          type: number
+          example: 8.03
+        items:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/OrderItem"
+          minimum: 1
+    OrderItem:
+      type: "object"
+      required:
+        - quantity
+        - product
+      properties:
+        quantity:
+          type: "integer"
+          format: "int32"
+          minimum: 1
+          maximum: 2
+          example: 2
+        productId:
+          type: "string"
+          example: "CattleNVD"
+    Product:
+      type: "object"
+      required:
+        - id
+        - name
+        - price
+      properties:
+        id:
+          type: "string"
+          example: "CattleNVD"
+        name:
+          type: "string"
+          example: "Cattle NVD Booklet"
+        price:
+          type: "number"
+          example: 40.14
+        available:
+          type: "number"
+          example: 2
+    PaymentMethod:
+      type: "string"
+      enum:
+        - AAI
+        - Stripe
+      example: "Stripe"
+    IVRVerifyRequest:
+      type: "object"
+      required:
+        - userId
+        - ePin
+      properties:
+        userId:
+          type: "integer"
+          example: "1234"
+        ePin:
+          type: "integer"
+          example: "1234"
+    IVRVerifyResponse:
+      type: "object"
+      properties:
+        pic:
+          type: "string"
+          example: "TESTMODE"
+        userId:
+          type: "integer"
+          example: "1234"
+        isEligible:
+          type: "boolean"
+          example: true
+        isAccreditationDue:
+          type: "boolean"
+          example: true
+        accreditationDueDate:
+          type: "string"
+          format: date-time
+          example: "2020-11-11T04:06:16.782Z"
+        price:
+          type: "number"
+          example: 99.0
+        state:
+          $ref: "#/components/schemas/IVRQState"
+        modules:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/IVRModule"
+        questionSet:
+          type: string
+          example: "questionset01"
+        cattle:
+          type: boolean
+        sheep:
+          type: boolean
+        dairyQa:
+          type: boolean
+    IVRStateRequest:
+      type: "object"
+      required:
+        - userId
+        - ePin
+        - state
+      properties:
+        userId:
+          type: "integer"
+          example: "1234"
+        ePin:
+          type: "integer"
+          example: "1234"
+        state:
+          $ref: "#/components/schemas/IVRQState"
+    IVRPaymentRequest:
+      type: "object"
+      required:
+        - userId
+        - ePin
+        - paymentMethod
+        - paymentToken
+        - totalIncGst
+      properties:
+        userId:
+          type: "integer"
+          example: "1234"
+        ePin:
+          type: "integer"
+          example: "1234"
+        paymentMethod:
+          $ref: "#/components/schemas/PaymentMethod"
+        paymentToken:
+          type: string
+          description: "Payment method specific token"
+          example: "tok_1HmB2n2eZvKYlo2C8UkRaSXP"
+        totalIncGst:
+          type: number
+          example: 99.0
+          
